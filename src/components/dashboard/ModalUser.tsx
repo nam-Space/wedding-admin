@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
-import { Button, Col, ConfigProvider, Form, Modal, Row, Upload, UploadProps, message, notification } from "antd";
+import { Button, Col, ConfigProvider, Form, Modal, Row, Upload, UploadFile, UploadProps, message, notification } from "antd";
 import { isMobile } from 'react-device-detect';
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
@@ -29,7 +29,8 @@ const ModalUser = (props: IProps) => {
 
     const [loadingUpload, setLoadingUpload] = useState<boolean>(false);
     const [dataImage, setDataImage] = useState<IUserImage[]>([]);
-    const [songUrl, setSongUrl] = useState('')
+    const [songList, setSongList] = useState<UploadFile[]>([
+    ]);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -42,6 +43,16 @@ const ModalUser = (props: IProps) => {
                     {
                         uid: uuidv4(),
                         name: `${import.meta.env.VITE_BE_URL}${dataInit.image}`
+                    }
+                ])
+            }
+            if (dataInit?.song) {
+                setSongList([
+                    {
+                        uid: uuidv4(),
+                        name: dataInit.song,
+                        status: 'done',
+                        url: `${import.meta.env.VITE_BE_URL}${dataInit.song}`
                     }
                 ])
             }
@@ -59,7 +70,7 @@ const ModalUser = (props: IProps) => {
             const dataObj = {
                 fullName,
                 image: (dataImage[0]?.name as any)?.replaceAll(`${import.meta.env.VITE_BE_URL}`, ""),
-                song: songUrl,
+                song: songList[0].name,
             }
 
             const res: any = await callUpdateUserById(dataInit._id, dataObj);
@@ -80,7 +91,7 @@ const ModalUser = (props: IProps) => {
             const dataObj = {
                 fullName,
                 image: (dataImage[0]?.name as any)?.replaceAll(`${import.meta.env.VITE_BE_URL}`, ""),
-                song: songUrl
+                song: songList[0].name
             }
             const res: any = await callCreateUser(dataObj);
             if (res.isSuccess) {
@@ -102,6 +113,7 @@ const ModalUser = (props: IProps) => {
         form.resetFields();
         setDataInit(null);
         setDataImage([])
+        setSongList([])
         setOpenModal(false);
     }
 
@@ -182,7 +194,12 @@ const ModalUser = (props: IProps) => {
             if (info.file.status === "done") {
                 message.success(`${info.file.name} upload thành công 🎵`);
                 console.log("Server trả về:", info.file.response);
-                setSongUrl(info.file.response.fileUrl)
+                setSongList([{
+                    uid: uuidv4(),
+                    name: info.file.response.fileUrl,
+                    status: 'done',
+                    url: `${import.meta.env.VITE_BE_URL}${info.file.response.fileUrl}`
+                }])
             } else if (info.file.status === "error") {
                 message.error(`${info.file.name} upload thất bại 😥`);
             }
@@ -276,7 +293,7 @@ const ModalUser = (props: IProps) => {
                             name="song"
                         >
                             <ConfigProvider locale={enUS}>
-                                <Upload {...propsSong}>
+                                <Upload {...propsSong} multiple={false} maxCount={1} defaultFileList={songList}>
                                     <Button icon={<UploadOutlined />}>Click để tải</Button>
                                 </Upload>
                             </ConfigProvider>
