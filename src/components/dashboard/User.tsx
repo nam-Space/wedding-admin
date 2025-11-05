@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Button, Input, Modal, Popconfirm, Select, Space, Table, Tag } from "antd";
-import queryString from "query-string";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { Button, Popconfirm, Space, } from "antd";
+import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { callDeleteUserById, callGetUsers } from "../../config/api";
 import { ActionType, ProColumns } from "@ant-design/pro-components";
@@ -30,7 +29,7 @@ const User = () => {
             title: "STT",
             dataIndex: "stt",
             key: "stt",
-            render: (text, record, index, action) => {
+            render: (_text, _record, index, _action) => {
                 return <p>{index + 1}</p>;
             },
         },
@@ -38,7 +37,7 @@ const User = () => {
             title: "Họ và tên",
             dataIndex: "fullName",
             key: "fullName",
-            render: (text, record, index, action) => {
+            render: (_text, record, _index, _action) => {
                 return <div className="flex items-center gap-[10px]">
                     <img
                         src={getUserAvatar(record?.image)}
@@ -55,7 +54,7 @@ const User = () => {
             title: "Link thiệp cưới",
             dataIndex: "url",
             key: "url",
-            render: (text, record, index, action) => {
+            render: (_text, record, _index, _action) => {
                 return <a href={record.url} target="_blank">{record.url}</a>;
             },
         },
@@ -63,14 +62,14 @@ const User = () => {
             title: "Bài hát",
             dataIndex: "song",
             key: "song",
-            render: (text, record, index, action) => {
+            render: (_text, record, _index, _action) => {
                 return <p>{record.song}</p>;
             },
         },
         {
             title: "Hành động",
             key: "action",
-            render: (_, record, index, action) => (
+            render: (_, record, _index, _action) => (
                 <Space>
                     <EditOutlined
                         style={{
@@ -106,7 +105,7 @@ const User = () => {
         },
     ];
 
-    const buildQuery = (params: any, sort: any, filter: any) => {
+    const buildQuery = (params: any, _sort: any, _filter: any) => {
         let temp = ""
 
         const clone = { ...params, currentPage: params.current, limit: params.pageSize };

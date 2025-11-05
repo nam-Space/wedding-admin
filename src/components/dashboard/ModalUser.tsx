@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ModalForm, ProForm, ProFormText } from "@ant-design/pro-components";
+import { ModalForm, ProFormText } from "@ant-design/pro-components";
 import { Button, Col, ConfigProvider, Form, Modal, Row, Upload, UploadProps, message, notification } from "antd";
 import { isMobile } from 'react-device-detect';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import enUS from 'antd/lib/locale/en_US';
 import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
@@ -48,7 +48,7 @@ const ModalUser = (props: IProps) => {
         }
 
         return () => form.resetFields()
-    }, [dataInit]);
+    }, [dataInit, form]);
 
     const submitData = async (valuesForm: any) => {
         const { fullName } = valuesForm;
@@ -105,7 +105,7 @@ const ModalUser = (props: IProps) => {
         setOpenModal(false);
     }
 
-    const handleRemoveFile = (file: any) => {
+    const handleRemoveFile = (_: any) => {
         setDataImage([])
     }
 
@@ -129,7 +129,7 @@ const ModalUser = (props: IProps) => {
         reader.readAsDataURL(img);
     };
 
-    const beforeUpload = (file: any) => {
+    const beforeUpload = (_: any) => {
         return true;
     };
 
