@@ -70,7 +70,7 @@ const ModalUser = (props: IProps) => {
             const dataObj = {
                 fullName,
                 image: (dataImage[0]?.name as any)?.replaceAll(`${import.meta.env.VITE_BE_URL}`, ""),
-                song: songList[0].name,
+                song: songList[0]?.name,
             }
 
             const res: any = await callUpdateUserById(dataInit._id, dataObj);
@@ -91,7 +91,7 @@ const ModalUser = (props: IProps) => {
             const dataObj = {
                 fullName,
                 image: (dataImage[0]?.name as any)?.replaceAll(`${import.meta.env.VITE_BE_URL}`, ""),
-                song: songList[0].name
+                song: songList[0]?.name
             }
             const res: any = await callCreateUser(dataObj);
             if (res.isSuccess) {
