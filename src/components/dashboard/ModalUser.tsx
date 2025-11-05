@@ -59,7 +59,7 @@ const ModalUser = (props: IProps) => {
         }
 
         return () => form.resetFields()
-    }, [dataInit, form]);
+    }, [dataInit]);
 
     const submitData = async (valuesForm: any) => {
         const { fullName } = valuesForm;
