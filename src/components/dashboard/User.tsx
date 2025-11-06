@@ -9,6 +9,7 @@ import DataTable from "../antd/Table";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalUser from "./ModalUser";
 import { getUserAvatar } from "../../utils/imageUrl";
+import dayjs from "dayjs";
 
 const User = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -17,10 +18,10 @@ const User = () => {
     const tableRef = useRef<ActionType>(null);
     const [data, setData] = useState([]);
     const [meta, setMeta] = useState({
-        "totalItems": 0,
-        "currentPage": 1,
-        "itemsPerPage": 10,
-        "totalPages": 1
+        current: 1,
+        pageSize: 10,
+        pages: 1,
+        total: 0
     });
     const [isLoading, setIsLoading] = useState(false);
 
@@ -67,6 +68,16 @@ const User = () => {
             render: (_text, record, _index, _action) => {
                 return <div className="w-[200px]">
                     <a href={record.song} target="_blank">{record.song}</a>
+                </div>;
+            },
+        },
+        {
+            title: "Thời gian tạo",
+            dataIndex: "createdAt",
+            key: "createdAt",
+            render: (_text, record, _index, _action) => {
+                return <div>
+                    {dayjs(record.createdAt).format("HH:mm:ss DD/MM/YYYY")}
                 </div>;
             },
         },
@@ -121,7 +132,7 @@ const User = () => {
         if (clone.fullName) {
             temp += `&fullName=${clone.fullName}`
         }
-
+        temp += `&sort=-createdAt`
         return temp;
     }
 
@@ -146,7 +157,7 @@ const User = () => {
                 toast.success("Xóa thành công!", {
                     position: "bottom-right",
                 });
-                handleGetUsers(`current=1&limit=10`);
+                reloadTable()
             } else {
                 toast.error("Xóa thất bại!", {
                     position: "bottom-right",
@@ -176,10 +187,10 @@ const User = () => {
                 scroll={{ x: true }}
                 pagination={
                     {
-                        current: meta.currentPage,
-                        pageSize: meta.itemsPerPage,
+                        current: meta.current,
+                        pageSize: meta.pageSize,
                         showSizeChanger: true,
-                        total: meta.totalItems,
+                        total: meta.total,
                         showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} bản ghi</div>) }
                     }
                 }
