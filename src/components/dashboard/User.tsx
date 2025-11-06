@@ -55,7 +55,9 @@ const User = () => {
             dataIndex: "url",
             key: "url",
             render: (_text, record, _index, _action) => {
-                return <a href={record.url} target="_blank">{record.url}</a>;
+                return <div className="w-[200px]">
+                    <a href={record.url} target="_blank">{record.url}</a>
+                </div>;
             },
         },
         {
@@ -63,7 +65,9 @@ const User = () => {
             dataIndex: "song",
             key: "song",
             render: (_text, record, _index, _action) => {
-                return <p>{record.song}</p>;
+                return <div className="w-[200px]">
+                    <a href={record.song} target="_blank">{record.song}</a>
+                </div>;
             },
         },
         {

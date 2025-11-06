@@ -42,7 +42,7 @@ const ModalUser = (props: IProps) => {
                 setDataImage([
                     {
                         uid: uuidv4(),
-                        name: `${import.meta.env.VITE_BE_URL}${dataInit.image}`
+                        name: dataInit.image
                     }
                 ])
             }
@@ -52,7 +52,7 @@ const ModalUser = (props: IProps) => {
                         uid: uuidv4(),
                         name: dataInit.song,
                         status: 'done',
-                        url: `${import.meta.env.VITE_BE_URL}${dataInit.song}`
+                        url: dataInit.song
                     }
                 ])
             }
@@ -60,6 +60,7 @@ const ModalUser = (props: IProps) => {
 
         return () => form.resetFields()
     }, [dataInit]);
+
 
     const submitData = async (valuesForm: any) => {
         const { fullName } = valuesForm;
@@ -69,7 +70,7 @@ const ModalUser = (props: IProps) => {
 
             const dataObj = {
                 fullName,
-                image: (dataImage[0]?.name as any)?.replaceAll(`${import.meta.env.VITE_BE_URL}`, ""),
+                image: dataImage[0]?.name,
                 song: songList[0]?.name,
             }
 
@@ -90,7 +91,7 @@ const ModalUser = (props: IProps) => {
             //create
             const dataObj = {
                 fullName,
-                image: (dataImage[0]?.name as any)?.replaceAll(`${import.meta.env.VITE_BE_URL}`, ""),
+                image: dataImage[0]?.name,
                 song: songList[0]?.name
             }
             const res: any = await callCreateUser(dataObj);
@@ -163,7 +164,7 @@ const ModalUser = (props: IProps) => {
         const res: any = await callUploadImage({ file, folder: 'images' });
         if (res?.isSuccess) {
             setDataImage([{
-                name: `${import.meta.env.VITE_BE_URL}${res.fileUrl}`,
+                name: `${res.fileUrl}`,
                 uid: uuidv4()
             }])
             if (onSuccess) onSuccess('ok')
@@ -198,7 +199,7 @@ const ModalUser = (props: IProps) => {
                     uid: uuidv4(),
                     name: info.file.response.fileUrl,
                     status: 'done',
-                    url: `${import.meta.env.VITE_BE_URL}${info.file.response.fileUrl}`
+                    url: `${info.file.response.fileUrl}`
                 }])
             } else if (info.file.status === "error") {
                 message.error(`${info.file.name} upload thất bại 😥`);
@@ -268,7 +269,7 @@ const ModalUser = (props: IProps) => {
                                                         uid: uuidv4(),
                                                         name: dataInit?.image ?? "",
                                                         status: 'done',
-                                                        url: `${import.meta.env.VITE_BE_URL}${dataInit.image}`,
+                                                        url: `${dataInit.image}`,
                                                     }
                                                 ] : []
                                         }
