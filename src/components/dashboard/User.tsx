@@ -6,10 +6,13 @@ import { toast } from "react-toastify";
 import { callDeleteUserById, callGetUsers } from "../../config/api";
 import { ActionType, ProColumns } from "@ant-design/pro-components";
 import DataTable from "../antd/Table";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, ManOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalUser from "./ModalUser";
 import { getUserAvatar } from "../../utils/imageUrl";
 import dayjs from "dayjs";
+import { LOCATION, LOCATION_VI, POINT } from "../../constants/location";
+import { IoMdFemale } from "react-icons/io";
+import { IoMdMale } from "react-icons/io";
 
 const User = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -70,6 +73,30 @@ const User = () => {
                     <a href={record.song} target="_blank">{record.song}</a>
                 </div>;
             },
+        },
+        {
+            title: "Địa điểm",
+            dataIndex: "location",
+            key: "location",
+            render: (_text, record, _index, _action) => {
+
+                return record.location ? <div>
+                    <div className="flex items-center gap-[4px] font-semibold text-[20px]">
+                        {record.location === LOCATION.GROOM ? <IoMdMale className="text-blue-500" /> : <IoMdFemale className="text-pink-500" />}
+
+                        {(LOCATION_VI as any)[record.location]}
+                    </div>
+                    <div className="mt-[10px]">
+                        <iframe
+                            className="w-[250px] h-[200px]"
+                            src={`https://www.google.com/maps?q=${(POINT as any)[record.location].lat},${(POINT as any)[record.location].lng}&z=15&output=embed`}
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                    </div>
+                </div> : <div></div>
+            },
+            width: 250
         },
         {
             title: "Thời gian tạo",

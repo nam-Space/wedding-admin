@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ModalForm, ProFormText } from "@ant-design/pro-components";
+import { ModalForm, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Button, Col, ConfigProvider, Form, Modal, Row, Upload, UploadFile, UploadProps, message, notification } from "antd";
 import { isMobile } from 'react-device-detect';
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons
 import { callCreateUser, callUpdateUserById, callUploadImage } from "../../config/api";
 import { toast } from "react-toastify";
 import ImgCrop from 'antd-img-crop';
+import { LOCATION_VI, POINT } from "../../constants/location";
 
 interface IProps {
     openModal: boolean;
@@ -63,7 +64,7 @@ const ModalUser = (props: IProps) => {
 
 
     const submitData = async (valuesForm: any) => {
-        const { fullName } = valuesForm;
+        const { fullName, location } = valuesForm;
 
         if (dataInit?._id) {
             //update
@@ -72,6 +73,9 @@ const ModalUser = (props: IProps) => {
                 fullName,
                 image: dataImage[0]?.name,
                 song: songList[0]?.name,
+                location: location,
+                lat: (POINT as any)[location].lat,
+                lng: (POINT as any)[location].lng,
             }
 
             const res: any = await callUpdateUserById(dataInit._id, dataObj);
@@ -92,7 +96,10 @@ const ModalUser = (props: IProps) => {
             const dataObj = {
                 fullName,
                 image: dataImage[0]?.name,
-                song: songList[0]?.name
+                song: songList[0]?.name,
+                location: location,
+                lat: (POINT as any)[location].lat,
+                lng: (POINT as any)[location].lng,
             }
             const res: any = await callCreateUser(dataObj);
             if (res.isSuccess) {
@@ -285,7 +292,6 @@ const ModalUser = (props: IProps) => {
                                 </ImgCrop>
                             </ConfigProvider>
                         </Form.Item>
-
                     </Col>
                     <Col lg={12} md={12} sm={24} xs={24}>
                         <Form.Item
@@ -299,7 +305,15 @@ const ModalUser = (props: IProps) => {
                                 </Upload>
                             </ConfigProvider>
                         </Form.Item>
-
+                    </Col>
+                    <Col lg={12} md={12} sm={24} xs={24}>
+                        <ProFormSelect
+                            name="location"
+                            label={"Địa điểm"}
+                            valueEnum={LOCATION_VI}
+                            placeholder={"Chọn địa điểm"}
+                            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
+                        />
                     </Col>
                 </Row>
             </ModalForm>
