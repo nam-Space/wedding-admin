@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { callDeleteUserById, callGetUsers } from "../../config/api";
 import { ActionType, ProColumns } from "@ant-design/pro-components";
 import DataTable from "../antd/Table";
-import { DeleteOutlined, EditOutlined, ManOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import ModalUser from "./ModalUser";
 import { getUserAvatar } from "../../utils/imageUrl";
 import dayjs from "dayjs";
