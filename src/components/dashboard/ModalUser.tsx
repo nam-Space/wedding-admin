@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ModalForm, ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { ModalForm, ProForm, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import { Button, Col, ConfigProvider, Form, Modal, Row, Upload, UploadFile, UploadProps, message, notification } from "antd";
 import { isMobile } from 'react-device-detect';
 import { useEffect, useState } from "react";
@@ -10,7 +10,9 @@ import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons
 import { callCreateUser, callUpdateUserById, callUploadImage } from "../../config/api";
 import { toast } from "react-toastify";
 import ImgCrop from 'antd-img-crop';
-import { LOCATION_VI, POINT } from "../../constants/location";
+import { LOCATION, LOCATION_VI, POINT } from "../../constants/location";
+import { IoMdFemale, IoMdMale } from "react-icons/io";
+import { DebounceSelect } from "../antd/DebounceSelect";
 
 interface IProps {
     openModal: boolean;
@@ -25,6 +27,12 @@ interface IUserImage {
     uid: string;
 }
 
+interface ILocation {
+    label?: any;
+    value?: string;
+    key?: string;
+}
+
 const ModalUser = (props: IProps) => {
     const { openModal, setOpenModal, reloadTable, dataInit, setDataInit } = props;
 
@@ -32,6 +40,16 @@ const ModalUser = (props: IProps) => {
     const [dataImage, setDataImage] = useState<IUserImage[]>([]);
     const [songList, setSongList] = useState<UploadFile[]>([
     ]);
+
+    const [location, setLocation] = useState<ILocation>({
+        label: <div className="flex items-center gap-[4px] font-semibold" >
+            <IoMdMale className="text-blue-500" />
+            {(LOCATION_VI as any)[LOCATION.GROOM]}
+        </div>,
+        value: LOCATION.GROOM,
+        key: LOCATION.GROOM,
+    });
+
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -57,6 +75,16 @@ const ModalUser = (props: IProps) => {
                     }
                 ])
             }
+            if (dataInit?.location) {
+                setLocation({
+                    label: <div className="flex items-center gap-[4px] font-semibold">
+                        {dataInit.location === LOCATION.GROOM ? <IoMdMale className="text-blue-500" /> : <IoMdFemale className="text-pink-500" />}
+                        {(LOCATION_VI as any)[dataInit.location]}
+                    </div>,
+                    key: dataInit.location,
+                    value: dataInit.location
+                })
+            }
         }
 
         return () => form.resetFields()
@@ -64,7 +92,7 @@ const ModalUser = (props: IProps) => {
 
 
     const submitData = async (valuesForm: any) => {
-        const { fullName, location } = valuesForm;
+        const { fullName } = valuesForm;
 
         if (dataInit?._id) {
             //update
@@ -73,9 +101,9 @@ const ModalUser = (props: IProps) => {
                 fullName,
                 image: dataImage[0]?.name,
                 song: songList[0]?.name,
-                location: location,
-                lat: (POINT as any)[location].lat,
-                lng: (POINT as any)[location].lng,
+                location: location.value,
+                lat: location.value ? (POINT as any)[location.value].lat : null,
+                lng: location.value ? (POINT as any)[location.value].lng : null,
             }
 
             const res: any = await callUpdateUserById(dataInit._id, dataObj);
@@ -97,9 +125,9 @@ const ModalUser = (props: IProps) => {
                 fullName,
                 image: dataImage[0]?.name,
                 song: songList[0]?.name,
-                location: location,
-                lat: (POINT as any)[location].lat,
-                lng: (POINT as any)[location].lng,
+                location: location.value,
+                lat: location.value ? (POINT as any)[location.value].lat : null,
+                lng: location.value ? (POINT as any)[location.value].lng : null,
             }
             const res: any = await callCreateUser(dataObj);
             if (res.isSuccess) {
@@ -306,7 +334,7 @@ const ModalUser = (props: IProps) => {
                             </ConfigProvider>
                         </Form.Item>
                     </Col>
-                    <Col lg={12} md={12} sm={24} xs={24}>
+                    {/* <Col lg={12} md={12} sm={24} xs={24}>
                         <ProFormSelect
                             name="location"
                             label={"Địa điểm"}
@@ -314,6 +342,53 @@ const ModalUser = (props: IProps) => {
                             placeholder={"Chọn địa điểm"}
                             rules={[{ required: true, message: "Trường này là bắt buộc" }]}
                         />
+                    </Col> */}
+                    <Col lg={12} md={12} sm={24} xs={24}>
+                        <ProForm.Item
+                            name="location"
+                            label={"Địa điểm"}
+                            rules={[{ required: true, message: "Trường này là bắt buộc" }]}
+                        >
+                            <DebounceSelect
+                                allowClear
+                                defaultValue={location}
+                                value={location}
+                                placeholder={<span>Chọn địa điểm</span>}
+                                fetchOptions={async () => {
+                                    return await [
+                                        {
+                                            label: <div className="flex items-center gap-[4px] font-semibold">
+                                                <IoMdMale className="text-blue-500" />
+                                                {(LOCATION_VI as any)[LOCATION.GROOM]}
+                                            </div>,
+                                            value: LOCATION.GROOM
+                                        },
+                                        {
+                                            label: <div className="flex items-center gap-[4px] font-semibold">
+                                                <IoMdFemale className="text-pink-500" />
+                                                {(LOCATION_VI as any)[LOCATION.BRIDE]}
+                                            </div>,
+                                            value: LOCATION.BRIDE
+                                        }
+                                    ]
+                                }}
+                                onChange={(newValue: any) => {
+                                    setLocation({
+                                        key: newValue?.key,
+                                        label: newValue?.label,
+                                        value: newValue?.value
+                                    });
+                                }}
+                                className="w-full"
+                            />
+                        </ProForm.Item>
+                        {location.value && <div className="mt-[10px]">
+                            <iframe
+                                className="w-full h-[250px]"
+                                src={`https://www.google.com/maps?q=${(POINT as any)[location.value].lat},${(POINT as any)[location.value].lng}&z=15&output=embed`}
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe></div>}
                     </Col>
                 </Row>
             </ModalForm>
