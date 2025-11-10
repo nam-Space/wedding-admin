@@ -150,6 +150,14 @@ const ModalUser = (props: IProps) => {
         setDataInit(null);
         setDataImage([])
         setSongList([])
+        setLocation({
+            label: <div className="flex items-center gap-[4px] font-semibold" >
+                <IoMdMale className="text-blue-500" />
+                {(LOCATION_VI as any)[LOCATION.GROOM]}
+            </div>,
+            value: LOCATION.GROOM,
+            key: LOCATION.GROOM,
+        })
         setOpenModal(false);
     }
 
