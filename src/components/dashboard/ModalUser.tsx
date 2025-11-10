@@ -42,12 +42,9 @@ const ModalUser = (props: IProps) => {
     ]);
 
     const [location, setLocation] = useState<ILocation>({
-        label: <div className="flex items-center gap-[4px] font-semibold" >
-            <IoMdMale className="text-blue-500" />
-            {(LOCATION_VI as any)[LOCATION.GROOM]}
-        </div>,
-        value: LOCATION.GROOM,
-        key: LOCATION.GROOM,
+        label: "",
+        value: "",
+        key: "",
     });
 
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -151,12 +148,9 @@ const ModalUser = (props: IProps) => {
         setDataImage([])
         setSongList([])
         setLocation({
-            label: <div className="flex items-center gap-[4px] font-semibold" >
-                <IoMdMale className="text-blue-500" />
-                {(LOCATION_VI as any)[LOCATION.GROOM]}
-            </div>,
-            value: LOCATION.GROOM,
-            key: LOCATION.GROOM,
+            label: "",
+            value: "",
+            key: "",
         })
         setOpenModal(false);
     }
